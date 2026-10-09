@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Governance, Privacy, and Secure Design Principles for Developers</title>
+<style>
+:root{--ink:#0b2a55;--blue:#1d6fe8;--sky:#e8f1ff;--line:#bcd5fb;--bad:#d64545;--pg:#f4f8ff;--pgt:#0b2a55;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--pg:#07162d;--pgt:#dbe8ff}}
+:root[data-theme="dark"]{--pg:#07162d;--pgt:#dbe8ff}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--pg);color:var(--pgt);font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;display:flex;flex-direction:column;align-items:center;padding:16px}
+.wrap{width:100%;max-width:1100px}
+.stage{container-type:inline-size;position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:14px;color:var(--ink);background:linear-gradient(160deg,#fff,#dcebff);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;padding:2.4cqw 3cqw 2cqw}
+.stage::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,#1d6fe812 0 1px,transparent 1px 4cqw),repeating-linear-gradient(0deg,#1d6fe812 0 1px,transparent 1px 4cqw);animation:drift 30s linear infinite}
+@keyframes drift{to{background-position:4cqw 4cqw}}
+.stage>*{position:relative}
+h2{margin:0;font-size:max(14px,2.1cqw);font-weight:700;letter-spacing:.01em;color:var(--blue);text-align:center}
+.vis{flex:1;width:100%;display:flex;align-items:center;justify-content:center;gap:4cqw;flex-wrap:wrap;min-height:0}
+.chip{position:relative;background:#fff;border:2px solid var(--line);border-radius:1.4cqw;padding:1.2cqw 1.6cqw;min-width:11cqw;max-width:20cqw;text-align:center;box-shadow:0 .6cqw 1.6cqw #1d6fe822;opacity:0;transform:translateY(1.2cqw) scale(.92);transition:opacity .6s,transform .6s}
+.chip b{display:block;font-size:max(22px,3.6cqw);font-weight:400;line-height:1.2}
+.chip span{display:block;font-size:max(10px,1.35cqw);font-weight:600;margin-top:.4cqw}
+.on{opacity:1!important;transform:none!important}
+.chip.bad{border-color:var(--bad)}.chip.x{filter:grayscale(1)}.chip.x.on{opacity:.5!important}
+.flow .chip+.chip::before{content:"\2192";position:absolute;left:-3.4cqw;top:50%;translate:0 -50%;font-size:2.6cqw;color:var(--blue)}
+.gear{gap:0}.gear .chip{width:17cqw;height:17cqw;border-radius:50%;max-width:none;margin:0 -1.2cqw;display:flex;flex-direction:column;justify-content:center;border-width:3px;border-color:var(--blue)}
+.gear .chip b{animation:spin 8s linear infinite}.gear .chip:nth-child(2) b{animation-direction:reverse}
+@keyframes spin{to{rotate:360deg}}
+.panel{flex:1;max-width:44cqw;align-self:stretch;margin:1cqw 0;border:2px solid var(--line);border-radius:1.6cqw;background:#ffffffaa;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1cqw;padding:1cqw}
+.panel h3{margin:0;font-size:max(12px,1.7cqw)}
+.rings{display:block;text-align:center}
+.ring{border:2px dashed var(--blue);border-radius:2cqw;padding:3cqw 2.2cqw .8cqw;margin:0 auto;opacity:0;transition:opacity .7s;background:#1d6fe80d;position:relative;min-width:12cqw}
+.ring>em{position:absolute;top:.6cqw;left:0;right:0;font-style:normal;font-weight:700;font-size:max(10px,1.3cqw)}
+.ring:last-child{padding-top:3cqw}
+.shield{position:relative;width:100%;height:100%}
+.shield .core{position:absolute;left:50%;top:50%;translate:-50% -50%;width:20cqw;height:20cqw;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,#4d94ff,#1d6fe8);color:#fff;font-weight:700;font-size:max(12px,1.9cqw);clip-path:polygon(50% 0,100% 14%,100% 55%,50% 100%,0 55%,0 14%);padding-top:1cqw;text-align:center}
+.shield .core b{font-size:max(26px,5cqw);font-weight:400}
+.shield .chip{position:absolute;translate:-50% -50%;min-width:0}
+.shield .chip b{font-size:max(16px,2.4cqw)}
+.big{min-height:1.2em;font-size:max(15px,3cqw);font-weight:800;text-align:center;opacity:0;transition:opacity .8s;margin:.4cqw 0 1cqw}
+.end .chip{max-width:none}.end .chip b{font-size:max(18px,3cqw);font-weight:800}
+.meter{width:30cqw;height:1.6cqw;background:#e1ecff;border-radius:1cqw;overflow:hidden;margin-top:2cqw;opacity:0;transition:opacity .6s}
+.meter i{display:block;height:100%;width:92%;background:linear-gradient(90deg,#d64545,#e8a33d 60%,#2fae6b);transition:width 7s ease-in-out 1s}
+.meter.on i{width:18%}
+.cap{min-height:3.2em;max-width:80cqw;text-align:center;font-size:max(11px,1.55cqw);line-height:1.4;background:#0b2a55;color:#fff;padding:.7cqw 1.6cqw;border-radius:1cqw}
+.start{position:absolute!important;inset:0;z-index:5;background:linear-gradient(160deg,#0b2a55,#1d6fe8);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2cqw;text-align:center;padding:4cqw}
+.start h1{margin:0;font-size:max(18px,3.6cqw);max-width:70cqw;line-height:1.15}
+.start p{margin:0;font-size:max(12px,1.6cqw);opacity:.85}
+.start button{font:inherit;font-weight:700;font-size:max(14px,1.9cqw);padding:1cqw 3cqw;border-radius:5cqw;border:0;background:#fff;color:var(--blue);cursor:pointer}
+.bar{display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.bar button{font:inherit;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer}
+.bar button:focus-visible,.dots button:focus-visible,.start button:focus-visible{outline:3px solid #ffb703;outline-offset:2px}
+.dots{display:flex;gap:4px;margin-top:10px;justify-content:center;flex-wrap:wrap}
+.dots button{width:22px;height:8px;padding:0;border:0;border-radius:4px;background:var(--line);cursor:pointer}
+.dots .d{background:#7fb0f5}.dots .a{background:var(--blue)}
+.vis{position:relative}.stage::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0b2a55,#1d6fe8);transform:translateX(101%);pointer-events:none;z-index:4}.stage.sw::after{animation:wipe .9s ease-in-out}@keyframes wipe{0%{transform:none}100%{transform:translateX(101%)}}
+.bg{position:absolute!important;inset:0;overflow:hidden;pointer-events:none}.bg i{position:absolute;bottom:-8cqw;font-style:normal;font-size:3cqw;opacity:.14;animation:rise linear infinite}@keyframes rise{to{transform:translateY(-120cqw) rotate(30deg)}}
+.chip.on{animation:pulse 3s ease-in-out 1s infinite}@keyframes pulse{50%{box-shadow:0 0 0 .7cqw #1d6fe822,0 .6cqw 1.6cqw #1d6fe855}}.chip.bad.on{animation:shake .6s 1}@keyframes shake{25%{translate:-.5cqw 0}75%{translate:.5cqw 0}}
+.xtra.tick{width:100%;overflow:hidden;white-space:nowrap;background:#d6454522;border-radius:1cqw;padding:.5cqw 0;font-size:max(10px,1.3cqw);color:#8a1f1f;font-weight:700}.tick span{display:inline-block;padding-left:100%;animation:mq 20s linear infinite}@keyframes mq{to{transform:translateX(-100%)}}
+.xtra.cnt,.xtra.risk{font-weight:800;font-size:max(14px,2.2cqw);margin-top:1cqw;font-variant-numeric:tabular-nums;color:var(--bad)}
+.atk{position:absolute;left:0;top:50%;translate:0 -50%;font-size:3.6cqw;opacity:0;animation:atk 5s ease-in 9s infinite}@keyframes atk{0%{left:0;opacity:1}70%{left:29cqw;opacity:1}85%{left:29cqw;opacity:1;filter:hue-rotate(90deg)}100%{left:27cqw;opacity:0}}
+@media(max-width:640px){.stage{aspect-ratio:3/4}.chip{min-width:34cqw;max-width:42cqw}.flow .chip+.chip::before{display:none}.vis{gap:2.5cqw}.gear .chip{width:28cqw;height:28cqw}}
+@media(prefers-reduced-motion:reduce){.stage::before,.gear .chip b{animation:none}.chip,.big,.ring{transition:none}}
+</style></head><body><div class="wrap">
+<div class="stage" id="stage">
+<div class="start" id="start"><h1>Governance, Privacy, and Secure Design Principles for Developers</h1><p>A narrated explainer, about 7 minutes. Turn your sound on.</p><button id="go">Start the explainer</button></div>
+<div class="bg" id="bg"></div><h2 id="ttl"></h2><div class="vis" id="vis"></div><div class="big" id="big"></div><div class="cap" id="cap" aria-live="polite"></div>
+</div>
+<div class="bar"><button id="prev" aria-label="Previous scene">Back</button><button id="pp">Pause</button><button id="next" aria-label="Next scene">Next</button><button id="snd" aria-pressed="true">Narration on</button></div>
+<div class="dots" id="dots"></div></div>
+<script>
+var S=[
+{t:"Why security matters",l:"row",fx:"tick",i:[["📱","Mobile apps"],["☁️","Cloud computing"],["🏦","Online banking"],["🛒","E-commerce"],["📰","Breach headlines","bad"]],big:"Secure Software = Compliance + Privacy + Security",n:"Every day, software systems store and process sensitive information. A single security failure can result in financial loss, legal penalties, and loss of trust. Developers must understand governance, privacy, and security by design."},
+{t:"Introduction to GRC",l:"gear",i:[["⚙️","Governance"],["⚙️","Risk"],["⚙️","Compliance"]],n:"Governance, Risk, and Compliance, or GRC, provides the framework for managing security and meeting legal obligations."},
+{t:"Governance",l:"flow",i:[["🏢","Management"],["📜","Policies"],["📏","Standards"],["👥","Responsibilities"]],n:"Governance establishes rules, policies, and responsibilities that guide security decisions."},
+{t:"Risk management",l:"flow",m:1,fx:"risk",i:[["🔍","Identify threats"],["⚖️","Evaluate impact"],["🛡️","Implement controls"],["📉","Risk reduced"]],n:"Risk management identifies threats, evaluates impact, and implements controls to reduce risk."},
+{t:"Compliance and regulations",l:"row",i:[["🌍","Multiple jurisdictions"],["🇪🇺","GDPR"],["🇲🇾","PDPA"],["🌏","Cyber Security Act"],["🇺🇸","CCPA"]],n:"Organizations often operate across multiple jurisdictions and must comply with different laws and regulations."},
+{t:"Security versus privacy",l:"split",tag:["Security","Privacy"],i:[["🗄️","Protected database"]],r:[["🙋","User decides what to share"]],big:"Security = Protect Data  |  Privacy = Respect Data",n:"Security protects information from unauthorized access, while privacy governs how personal information is collected and used."},
+{t:"Personally identifiable information",l:"row",i:[["👤","Name"],["📞","Phone number"],["🏠","Address"],["🛂","Passport"],["🧬","Biometrics"],["📍","Location"]],n:"Personally identifiable information includes any data that can identify an individual."},
+{t:"Privacy breach impact",l:"row",fx:"cnt",i:[["💸","Financial penalties","bad"],["⚖️","Lawsuits","bad"],["📉","Reputational damage","bad"],["🚪","Customer loss","bad"]],n:"Privacy violations can significantly affect organizations financially and reputationally."},
+{t:"Secure design principles",l:"flow",i:[["📐","Blueprint"],["🔧","Security built in"],["🔐","Secure digital system"]],n:"Security should be built into systems from the beginning through proven design principles."},
+{t:"Least privilege",l:"row",i:[["💳","Hotel key card"],["🚪","Room 204: opens"],["🔒","Every other room: locked","x"],["🔒","Staff areas: locked","x"]],n:"Users should receive only the permissions required to perform their tasks."},
+{t:"Separation of duties",l:"flow",i:[["💻","Developer writes"],["🔍","Reviewer checks"],["🚀","Operator deploys"]],n:"Critical functions should be divided among multiple individuals."},
+{t:"Defense in depth",l:"rings",fx:"atk",i:[["Monitoring (guards)"],["Access control (gate)"],["MFA (moat)"],["Firewalls (wall)"],["🏰 Protected data"]],n:"Multiple layers of protection provide resilience when a single security control fails."},
+{t:"Fail secure",l:"flow",i:[["🖥️","Cannot verify authorization"],["🔒","Door stays locked"]],big:"Default = Deny",n:"If authorization cannot be verified, access should be denied."},
+{t:"Economy of mechanism",l:"split",tag:["Simple design","Complex design"],i:[["🧩","Easy to understand, maintain, secure"]],r:[["🕸️","Hard to review, easy to break","bad"]],n:"Simple designs are easier to understand, maintain, and secure."},
+{t:"Complete mediation",l:"flow",i:[["🧑‍💻","Every request"],["🛂","Checkpoint verifies each one"],["✅","Access granted"]],n:"Every request should be validated before access is granted."},
+{t:"Open design",l:"row",i:[["👩‍💻","Experts review"],["📖","Public code and design"],["🔑","Only the keys stay secret"]],n:"Security should rely on secret keys, not secret designs."},
+{t:"Least common mechanism",l:"row",i:[["🗄️","User A: own locker"],["💾","User B: own storage"],["🪪","User C: own credentials"]],n:"Minimize shared resources to reduce exposure and risk."},
+{t:"Psychological acceptability",l:"row",i:[["🔑","Passkeys"],["🗝️","Password managers"],["😊","Users succeed"]],n:"Security mechanisms should be easy and convenient to use."},
+{t:"Component reuse",l:"row",i:[["🔒","AES encryption"],["🌐","TLS"],["🧱","Authentication libraries"]],n:"Reuse trusted and tested security components rather than creating new ones."},
+{t:"Summary",l:"shield",i:[["📜","Governance"],["⚠️","Risk"],["✅","Compliance"],["🙈","Privacy"],["📐","Secure design principles"]],n:"Secure software development requires understanding regulations, respecting privacy, and applying secure design principles throughout the software lifecycle."},
+{t:"",l:"row end",i:[["🛡️","Secure by Design"],["🔏","Privacy by Design"],["📋","Compliance by Design"]],n:""}
+];
+var $=function(i){return document.getElementById(i)},cur=-1,paused=true,T=[],MIN=19000,snd=true,sy=window.speechSynthesis;
+var dots=$("dots");S.forEach(function(s,k){var b=document.createElement("button");b.setAttribute("aria-label","Scene "+(k+1));b.onclick=function(){start();go(k)};dots.appendChild(b)});
+function mk(c,h){var d=document.createElement("div");d.className=c;if(h)d.innerHTML=h;return d}
+function build(s){var v=$("vis"),e=[];v.className="vis "+s.l;v.innerHTML="";
+function chip(a,c){var d=mk("chip"+(a[2]?" "+a[2]:""),"<b>"+a[0]+"</b><span>"+a[1]+"</span>");c.appendChild(d);e.push(d)}
+if(s.l=="split"){[s.i,s.r].forEach(function(arr,k){var p=mk("panel","<h3>"+s.tag[k]+"</h3>");arr.forEach(function(a){chip(a,p)});v.appendChild(p)})}
+else if(s.l=="rings"){var c=v;s.i.forEach(function(a){var d=mk("ring","<em>"+a[0]+"</em>");c.appendChild(d);e.push(d);c=d})}
+else if(s.l=="shield"){var w=mk("shield");v.appendChild(w);var co=mk("core","<b>🛡️</b>Secure Software");w.appendChild(co);e.push(co);s.i.forEach(function(a,k){var g=(-90+k*72)*Math.PI/180,d=mk("chip","<b>"+a[0]+"</b><span>"+a[1]+"</span>");d.style.left=50+36*Math.cos(g)+"%";d.style.top=50+40*Math.sin(g)+"%";w.appendChild(d);e.push(d)})}
+else s.i.forEach(function(a){chip(a,v)});
+if(s.m){var m=mk("meter xtra","<i></i>");v.parentNode.insertBefore(m,$("big"));e.push(m)}
+if(s.fx){var x=mk("xtra "+s.fx);v.parentNode.insertBefore(x,$("big"));fx(s.fx,x,v)}return e}
+function fx(n,x,v){if(n=="tick")x.innerHTML="<span>BREACH ALERT: customer records exposed  •  Ransomware halts hospital systems  •  Regulator opens privacy investigation  •  Millions of passwords leaked online  •  </span>";
+if(n=="risk"){x.textContent="Risk level: HIGH";T.push(setTimeout(function(){x.textContent="Risk level: LOW";x.style.color="#2fae6b"},9000))}
+if(n=="cnt"){var c=0;T.push(setInterval(function(){c=Math.min(c+71000,4970000);x.textContent="Illustrative cost: $"+c.toLocaleString()},120))}
+if(n=="atk"){x.className="atk xtra";x.textContent="👾";v.appendChild(x)}}
+function clr(){T.forEach(clearTimeout);T=[];if(sy)sy.cancel();[].forEach.call(document.querySelectorAll(".xtra"),function(m){m.remove()})}
+function go(k){clr();if(k<0)k=0;if(k>=S.length){paused=true;$("pp").textContent="Replay";return}
+cur=k;var s=S[k];var sg=$("stage");sg.classList.remove("sw");void sg.offsetWidth;sg.classList.add("sw");$("ttl").textContent=s.t?(k+1)+". "+s.t:"";$("big").textContent=s.big||"";$("big").classList.remove("on");$("big").style.opacity=0;$("cap").textContent=s.n;
+var e=build(s);$("pp").textContent="Pause";paused=false;
+[].forEach.call(dots.children,function(b,i){b.className=i<k?"d":i==k?"a":""});
+e.forEach(function(el,i){T.push(setTimeout(function(){el.classList.add("on")},700+i*(s.l=="shield"?800:1100)))});
+if(s.big)T.push(setTimeout(function(){$("big").style.opacity=1},900+e.length*1100));
+var st={a:false,b:false};function chk(){if(st.a&&st.b&&!paused)go(k+1)}
+T.push(setTimeout(function(){st.b=true;chk()},k==S.length-1?8000:MIN));
+if(!s.n||!snd||!sy){st.a=true}else T.push(setTimeout(function(){var u=new SpeechSynthesisUtterance(s.n),vs=sy.getVoices().filter(function(v){return/^en/i.test(v.lang)}),p=vs.filter(function(v){return/Google|Natural|Samantha|Daniel|Aria/i.test(v.name)})[0]||vs[0];if(p)u.voice=p;u.lang="en-US";u.rate=.95;u.onend=u.onerror=function(){st.a=true;chk()};sy.speak(u)},400))}
+function start(){$("start").style.display="none"}
+function pause(){paused=true;clr();$("pp").textContent="Resume"}
+$("go").onclick=function(){start();go(0)};
+$("pp").onclick=function(){if(cur<0){start();go(0)}else if(paused)go(cur>=S.length-1&&$("pp").textContent=="Replay"?0:cur);else pause()};
+$("prev").onclick=function(){start();go(cur-1)};$("next").onclick=function(){start();go(Math.min(cur+1,S.length-1))};
+$("snd").onclick=function(){snd=!snd;this.textContent=snd?"Narration on":"Narration off";this.setAttribute("aria-pressed",snd);if(cur>=0&&!paused)go(cur)};
+for(var q=0;q<12;q++){var p=document.createElement("i");p.textContent=["🔒","🛡️","🔑","🔐"][q%4];p.style.left=q*8.3+"%";p.style.animationDuration=18+q%5*4+"s";p.style.animationDelay=-q*2+"s";$("bg").appendChild(p)}
+document.addEventListener("keydown",function(ev){if(ev.key=="ArrowRight")$("next").click();if(ev.key=="ArrowLeft")$("prev").click()});
+</script></body></html>
